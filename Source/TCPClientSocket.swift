@@ -28,6 +28,7 @@
     import Darwin.C
 #endif
 import CLibvenice
+import Foundation
 
 public final class TCPClientSocket {
     private var socket: tcpsock
@@ -57,6 +58,15 @@ public final class TCPClientSocket {
 
     deinit {
         close()
+    }
+
+    public func desc() -> String {
+        let peer = tcpaddr(socket)
+        var buffer:[Int8] = Array<Int8>(count: 50, repeatedValue: 0)
+        let result = ipaddrstr(peer,&buffer)
+        let str = String(CString:result,  encoding:NSUTF8StringEncoding)
+
+        return str!
     }
 
     public func send(data: [Int8], deadline: Deadline = NoDeadline) throws {
